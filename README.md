@@ -3,8 +3,8 @@
 ## Deploy kubernetes
 kubernetes部署
 
-## Operations kubernetes
+## kubernetes operations
 kubernetes 运维
 
-## kubernetes flows
+## kubernetes workflows
 kubernetes工作原理
