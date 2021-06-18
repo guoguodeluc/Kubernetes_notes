@@ -1,0 +1,5 @@
+---
+# 安装软件版本
+etcd_version: "v3.4.16"
+docker_version: "v20.10.7"
+

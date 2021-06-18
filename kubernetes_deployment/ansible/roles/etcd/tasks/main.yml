@@ -1,0 +1,67 @@
+---
+# tasks file for etcd
+
+- name: Make directory for etcd
+  file: 
+    path: "{{ item }}"
+    state: directory
+#    recurse: true
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - "{{ etcd_dir }}"
+    - '{{ etcd_data }}'
+  tags:
+    - etcd
+
+- name: Get etcd binary files
+  copy: 
+    src: ../../../files/packages/etcd-{{ etcd_version }}/{{ item }}
+    dest: "{{ etcd_dir  }}"
+    mode: a+x
+  with_items:
+    - etcd
+    - etcdctl
+  tags:
+    - etcd
+
+- name: Set symlinks for etcdctl
+  file: 
+    src: "{{ etcd_dir  }}/etcdctl"
+    dest: /usr/local/bin/etcdctl
+    state: link
+  tags:
+    - etcd
+
+- name: Create etcd systemd unit
+  template: 
+    src: "{{ item.name }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - { name: 'etcd.service.j2', dest: '/etc/systemd/system/etcd.service' }
+    - { name: 'etcd.conf.j2', dest: '{{ etcd_dir }}/etcd.conf' }
+  notify: 
+    - Restart etcd
+  tags:
+    - etcd
+
+## handlers
+#- name: Systemd daemon reload
+#  systemd:
+#    daemon_reload: true
+#  tags:
+#    - etcd
+#    - daemon_reload
+
+#- name: Restart etcd
+#  systemd:
+#    name: etcd
+#    state: restarted
+#    enabled: true
+#  ignore_errors: true
+#  tags:
+#    - etcd

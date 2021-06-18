@@ -1,0 +1,59 @@
+---
+# tasks file for docker
+
+- name: Make directory for docker
+  file:
+    name: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - "{{ docker_dir }}"
+    - "/etc/docker"
+  tags:
+    - docker
+
+- name: Get docker binary file
+  copy:
+    src: ../../../files/packages/docker-{{ docker_version }}/{{ item }}
+    dest: "{{ docker_dir }}"
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - containerd
+    - containerd-shim
+    - containerd-shim-runc-v2
+    - ctr
+    - runc
+    - docker
+    - dockerd
+    - docker-init
+    - docker-proxy
+  tags:
+    - docker
+
+- name: Set symlinks for docker
+  file: 
+    src: "{{ docker_dir  }}/docker"
+    dest: /usr/local/bin/docker
+    state: link
+  tags:
+    - docker 
+
+- name: Create docker systemd unit
+  template: 
+    src: "{{ item.name }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - { name: 'docker.service.j2', dest: '/etc/systemd/system/docker.service' }
+    - { name: 'daemon.json.j2', dest: '/etc/docker/daemon.json ' }
+  notify: 
+    - Restart docker
+  tags:
+    - docker
+

@@ -1,0 +1,19 @@
+[Unit]
+Description=Etcd Server
+After=network.target
+After=network-online.target
+Wants=network-online.target
+Documentation=https://etcd.io/docs/v3.4/
+
+[Service]
+Type=notify
+# WorkingDirectory={{ etcd_data }}
+EnvironmentFile=/opt/etcd/etcd.conf
+ExecStart={{ etcd_dir }}/etcd
+Restart=always
+RestartSec=15
+LimitNOFILE=65536
+OOMScoreAdjust=-999
+
+[Install]
+WantedBy=multi-user.target

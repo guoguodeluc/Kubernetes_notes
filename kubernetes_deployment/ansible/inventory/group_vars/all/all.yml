@@ -1,0 +1,41 @@
+---
+
+## 用户账号和密码
+users:
+  - name: user
+    passwd: "A123456z"
+    shell: /bin/bash
+  - name: ops
+    passwd: "A123456z"
+    shell: /bin/bash
+
+
+## 需要配置key登录的变量，以及key的目录文件和选项
+#### 这里默认选项是限制key登录禁止端口转发，以及限制登录地址段，这里都是私有网段。
+keyuser: root
+keypath: /tmp/mykey.pub
+keyoptions: 'no-port-forwarding,from="10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.0/8"'
+
+
+## common变量
+PS1_prompt: mytest
+rsyslog_server: "192.168.88.88"
+
+## dns和ntp
+dns_domain: localdomain
+dns_servers: [ '192.168.88.2', "8.8.8.8"]
+ntp_servers: [ '192.168.88.2', 'ntp.aliyun.com']
+
+
+## etcd变量，etcd 集群初始状态 new/existing
+# etcd_dir是etcd的命令和etcd配置目录，etcd-data是存储etcd数据目录
+etcd_dir: '/opt/etcd'
+etcd_data: '/data/etcd'
+etcd_token: 'etcd-cluster'
+etcd_state: 'new'
+etcd_data_backup: '/data/etcd-backups/'
+
+
+## docker变量
+docker_dir: "/opt/docker"
+
